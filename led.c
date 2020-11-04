@@ -2,5 +2,5 @@
 #include "led.h"
 
 void LED_init() {
-    DDRB |= (1 << PB0);  /*arduino digital pin 8 output*/
+    DDRD |= (1 << PD6); /*arduino digital pin 6 output*/
 }

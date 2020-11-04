@@ -6,27 +6,29 @@
 #include "serial.h"
 #include "timer.h"
 
+void set_brightness(uint8_t data)
+{
+	OCR0A = data;
+}
+
 
 int main(void) {
-	uart_init();
-	LED_init();
-	timer_init();
-	uint8_t timerOverflowCount = 0; //count the number of overflows
-	while (1)
-	{
-		if (TIFR0 & (1 << OCF0A)) //Timer/Counter Interrupt Flag Register,  interrupt flag set when TCNT0 reset to 0.
-		{
-			timerOverflowCount++;
-			TIFR0 |= (1 << OCF0A);    //clear the overflow flag
+    uart_init();
+    LED_init();
+    timer_init();
+    uint8_t brightness[6] = { 0,20,50,80,190,255 }; //different OCR0A values 
+    while (1) {
+        for (uint8_t i = 0; i < sizeof(brightness) / sizeof(brightness[0]); i++)//increase brightness
+        {
+            set_brightness(brightness[i]);
+            _delay_ms(300);
+        }
 
-			if (timerOverflowCount >= 10)
-			{
-				PORTB ^= (1 << PB0); //Toggle LED
-				TCNT0 = 0; //reset counter
-				timerOverflowCount = 0; //Reset overflowcounter
-
-			}
-		}
-
-	}
+        for (uint8_t i = sizeof(brightness) / sizeof(brightness[0] - 1); i > 0; i--)//decrease brightness
+        {
+            set_brightness(brightness[i]);
+            _delay_ms(300);
+        }
+    }
+    return 0;
 }

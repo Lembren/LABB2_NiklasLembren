@@ -4,9 +4,8 @@
 
 void timer_init(void)
 {
-	TCCR0A |= (1 << WGM01);//CTC MODE
-	TCCR0B = (1 << CS00) | (1 << CS02); // set up prescaler = 1024
-	TCNT0 = 0; //Timer/Counter Register ,initialize counter
-	OCR0A = 156;//Output Compare Register, top value of counter.
-	/*16MHz/1024 = 15.625Hz 15625/((1/10)*1000) = 156,25 */
+	/*set fast PWM mode with none-inverting mode*/
+	TCCR0A = (1 << WGM00) | (1 << WGM01) | (1 << COM0A1);
+	/*Sets prescaler to 64*/
+	TCCR0B |= (1 << CS00) | (1 << CS01);
 }
